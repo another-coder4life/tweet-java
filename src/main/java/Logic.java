@@ -30,9 +30,10 @@ public class Logic {
      * The method receives the desired message to be posted as a parameter and throws a Twitter exception in case twitter messes up
      * and an IO in case the input/output messes up
      */
-    public void tweetSomething(String message) throws TwitterException, IOException {
+    public String tweetSomething(String message) throws TwitterException, IOException {
         Status status = twitter.updateStatus(message);
         System.out.println("Status update with success. Actual status is [" + status.getText() + "]");
+        return status.getText();
     }
 
     /**
@@ -43,7 +44,7 @@ public class Logic {
      *
      * Fetches the tweets for a specified handle name, which is a parameter in this method.
      */
-    public void fetchUserTweets (String handle) throws TwitterException, IOException{
+    public int fetchUserTweets (String handle) throws TwitterException, IOException{
         Paging page = new Paging(1,200);
         int p = 1;
         while (p <= 10){
@@ -51,6 +52,7 @@ public class Logic {
             statusList.addAll(twitter.getUserTimeline(handle, page));
             p++;
         }
+        return page.getCount();
     }
 
     /**
@@ -61,7 +63,7 @@ public class Logic {
      *
      * Fetches and outputs the tweets for the given user handle
      */
-    public void queryTweets (String handle) throws TwitterException, IOException{
+    public int queryTweets (String handle) throws TwitterException, IOException{
         statusList.clear();
         fetchUserTweets(handle);
         int counter = statusList.size();
@@ -70,5 +72,7 @@ public class Logic {
             counter--;
             System.out.println("Tweet #" + counter + ": " + statusList.get(counter).getText());
         }
+        int totalTweets = statusList.size();
+        return totalTweets;
     }
 }
